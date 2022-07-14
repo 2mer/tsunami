@@ -19,12 +19,13 @@ export default class Matrix2D<
 	height: number;
 	mat: T[][];
 	createTile;
+	possibilities: P[];
 
 	constructor({
 		width,
 		height,
 		createTile,
-		possibilities = [],
+		possibilities,
 	}: Matrix2DOptions<T, P>) {
 		super();
 
@@ -45,7 +46,7 @@ export default class Matrix2D<
 	}
 
 	get(position: Point2D) {
-		return this.mat[position.y][position.x];
+		return this.mat?.[position.y]?.[position.x];
 	}
 
 	below(position: Point2D | T) {
