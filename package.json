@@ -6,7 +6,8 @@
 	"private": false,
 	"scripts": {
 		"test": "jest",
-		"build": "rm -rf dist/ && tsc"
+		"build": "rm -rf dist/ && tsc",
+		"prepare": "yarn build"
 	},
 	"keywords": [],
 	"author": "",
