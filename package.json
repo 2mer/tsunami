@@ -1,6 +1,6 @@
 {
 	"name": "@sgty/tsunami",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "",
 	"main": "dist/index.js",
 	"private": false,
@@ -8,7 +8,7 @@
 		"test": "jest",
 		"build": "rm -rf dist/ && tsc",
 		"prepare": "pnpm build",
-		"publish": "pnpm publish --access public"
+		"pub": "pnpm publish --access public"
 	},
 	"keywords": [],
 	"author": "",

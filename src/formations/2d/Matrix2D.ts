@@ -138,4 +138,12 @@ export default class Matrix2D<
 			})
 		);
 	}
+
+	tileMissingOrCheck(position: Point2D, callback: (tile: T) => boolean) {
+		const tile = this.get(position);
+
+		if (!tile) return true;
+
+		return callback(tile);
+	}
 }
