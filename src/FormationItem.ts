@@ -28,7 +28,7 @@ export default class FormationItem<P extends FormationProbability> {
 				);
 
 				ctx.invalidations.forEach((inv: any) => {
-					inv.calcProbabilities(ctx);
+					inv.calcProbabilities({ ...ctx, item: inv });
 				});
 			}
 		}
