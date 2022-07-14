@@ -173,3 +173,20 @@ const mat = new Matrix2D({
 	],
 });
 ```
+
+**Collapsing:**
+now after we have set everything up we can start collapsing
+
+```ts
+const hasRemainingItemsToCollapse = mat.collapse();
+
+// or
+
+mat.collapseAll();
+const stop = mat.collapseAll({
+	step = 10, // amt to step per iter
+	timeout = 0, // ms
+});
+
+stop();
+```
