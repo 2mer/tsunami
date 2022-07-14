@@ -59,6 +59,10 @@ the `Formation` contains many slots - `FormationItem` which have many possible s
 
 ## Usage
 
+Feel free to take a look at this project as an implementation recipe
+
+[Wavebox - wave function collapse sandbox](https://github.com/LeRedditBro/wavebox)
+
 you can use one of the supplied formation out of the box
 or extend the base to your liking
 
