@@ -21,7 +21,8 @@ export default class Formation<
 	collapse(): boolean {
 		const collapsableItems = this.items
 			.filter((item) => !item.collapsed)
-			.sort((a, b) => a.probabilities.length - b.probabilities.length);
+			.sort((a, b) => a.probabilities.length - b.probabilities.length)
+			.filter((item) => Boolean(item.probabilities.length));
 		const [firstItem] = collapsableItems;
 
 		if (firstItem) {
