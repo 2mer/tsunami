@@ -6,7 +6,7 @@
 <img src="https://img.shields.io/bundlephobia/min/@sgty/tsunami"/>
 </p>
 
-An un-opinionated extensible javascript wave function collapse headless logic
+An un-opinionated extensible javascript wave function collapse headless logic library
 
 currently supports only 2D matrices, but feel free to look at the source code and use the 2D folder as a recipe, the base Formation classes are written as generically as possible while encapsulating the core logic required for collapsing
 
