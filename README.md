@@ -30,73 +30,142 @@ yarn add @sgty/tsunami
 pnpm add @sgty/tsunami
 ```
 
+## Core concepts
+
+tsunami exposes the following entities
+
+-   `Formation`
+-   `FormationItem`
+-   `FormationProbability`
+
+### Formation
+
+A collection of `FormationItem`s
+
+handles: - storage, structure, and acquisition of `FormationItem`s
+
+### FormationItem
+
+A entry in the `Formation`, contains all of the probabilities of that 'slot' in the formation
+
+handles: - item lifecycle - calculation of probabilities - bindings to rendering library
+
+### FormationProbability
+
+A possible solution to the `FormationItem` slot
+handles: - validity of the solution - item/rendition data
+
+the `Formation` contains many slots - `FormationItem` which have many possible solutions - `FormationProbability`
+
 ## Usage
 
 you can use one of the supplied formation out of the box
 or extend the base to your liking
 
+**Creating formations:**
+
 ```ts
-import { Matrix2D, TilePossibility, Tile, Directions2D } from '@sgty/tsunami';
-
-class MyTile extends TilePossibility {
-	tags: any[] = [];
-	color: number = 0xffffff;
-	texture: string | undefined = undefined;
-	rotation: number = 0;
-}
-
-export const DIRECTIONS = new Directions2D();
-
-const possibilities = [
-	// T shaped tile
-	...[0, 1, 2, 3]
-		.map((rot) => DIRECTIONS.rotate(rot))
-		.map(
-			(relativeDirections, index) =>
-				new (class extends MyTile {
-					texture = 't.png';
-					tags = [
-						relativeDirections.LEFT,
-						relativeDirections.DOWN,
-						relativeDirections.RIGHT,
-					];
-					rotation = index * 90;
-
-					isProbable({ formation: matrix, item: tile }) {
-						return (
-							matrix.get(
-								tile.position.add(relativeDirections.DOWN)
-							).tags.includes[relativeDirections.UP] &&
-							matrix.get(
-								tile.position.add(relativeDirections.LEFT)
-							).tags.includes[relativeDirections.RIGHT] &&
-							matrix.get(
-								tile.position.add(relativeDirections.RIGHT)
-							).tags.includes[relativeDirections.LEFT] &&
-							!matrix.get(
-								tile.position.add(relativeDirections.UP)
-							).tags.includes[relativeDirections.DOWN]
-						);
-					}
-				})()
-		),
-];
-
 const mat = new Matrix2D({
 	width: 200,
 	height: 200,
-	possibilities,
-
-	// here you can replace Tile with a custom class to handle binding to render objects
-	createItem: (position) => new Tile(position),
+	probabilities: [...],
+	createTile: (position) => ...,
 });
+```
 
-// collapse one
-mat.collapse();
+**Creating custom formations:**
 
-mat.collapseAll();
+incase you need a formation more attuned to a different data structure, you can look at the code of `Matrix2D`, and reference it as a recipe for your data structure, extension is not difficult, as `Matrix2D` is itself an extension of the base `Formation` class
 
-mat.expand({ top: 100, left: 20, bottom: 10 });
+**Creating formation items:**
 
-mat.collapseAll();
+example using PIXI.js
+
+```ts
+import { Tile, Matrix2D } from '@sgty/tsunami';
+import { Container } from 'pixi.js';
+
+
+class MyTile extends Tile {
+	container;
+
+	constructor(position, container) {
+		super(position);
+
+		this.container = container;
+	}
+
+	collapse(ctx) {
+		super.collapse(ctx);
+
+		if (this.collapsed) {
+			this.container.addChild(this.collapsed.graphics)
+		}
+	}
+}
+
+
+const container = new Container();
+
+const mat = new Matrix2D({
+	...
+	createTile: (position) => new MyTile(position, container),
+});
+```
+
+**Creating tile probabilities:**
+
+```ts
+import { TileProbability } from '@sgty/tsunami';
+import { Texture } from 'pixi.js';
+
+class PixiTileProbability extends TileProbability {
+	graphics = undefined;
+	tags = [];
+}
+
+class RedTile extends PixiTileProbability {
+	constructor(opts) {
+		super(opts);
+
+		this.graphics = new Sprite(Texture.WHITE);
+		this.graphics.tint = 0xff0000;
+		this.tags = ['red'];
+	}
+}
+
+class BlueTile extends PixiTileProbability {
+	constructor(opts) {
+		super(opts);
+
+		this.graphics = new Sprite(Texture.WHITE);
+		this.graphics.tint = 0x0000ff;
+		this.tags = ['blue'];
+	}
+
+	isProbable(ctx) {
+		const { item: tile, formation: matrix } = ctx;
+		const { position } = tile;
+
+		const below = matrix.get(position.add(new Point(0, -1)));
+
+		if (!below) return true;
+		if (!below.collapsed) return true;
+		if (!below.probabilities.length) return true;
+
+		return !below.collapsed.tags.includes('red');
+	}
+}
+```
+
+define probabilities of formation (Matrix2D impl):
+
+```ts
+const mat = new Matrix2D({
+	...
+	probabilities: [
+		new RedTile();
+		new BlueTile();
+	],
+});
 ```

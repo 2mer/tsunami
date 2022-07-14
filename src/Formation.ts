@@ -7,14 +7,14 @@ export default class Formation<
 	P extends FormationProbability
 > {
 	protected items: T[] = [];
-	protected possibilities: P[] = [];
+	protected probabilities: P[] = [];
 
 	getItems() {
 		return this.items;
 	}
 
 	getProbabilities() {
-		return this.possibilities;
+		return this.probabilities;
 	}
 
 	// returns true when there are still items that need to be collapsed

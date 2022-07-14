@@ -7,7 +7,7 @@ import TileProbability from './TileProbability';
 export type Matrix2DOptions<T extends Tile<P>, P extends TileProbability> = {
 	width: number;
 	height: number;
-	possibilities: P[];
+	probabilities: P[];
 	createTile: (position: Point2D, mat: Matrix2D<T, P>) => T;
 };
 
@@ -19,19 +19,19 @@ export default class Matrix2D<
 	height: number;
 	mat: T[][];
 	createTile;
-	possibilities: P[];
+	probabilities: P[];
 
 	constructor({
 		width,
 		height,
 		createTile,
-		possibilities,
+		probabilities,
 	}: Matrix2DOptions<T, P>) {
 		super();
 
 		this.width = width;
 		this.height = height;
-		this.possibilities = possibilities;
+		this.probabilities = probabilities;
 		this.createTile = createTile;
 
 		this.mat = Array.from({ length: height }, (_, j) =>
