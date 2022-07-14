@@ -3,8 +3,8 @@ import Point2D from './Point2D';
 const dirOrder = [
 	new Point2D(0, -1), // up
 	new Point2D(1, 0), // right
-	new Point2D(-1, 0), // left
 	new Point2D(0, 1), // down
+	new Point2D(-1, 0), // left
 ];
 
 const getDir = (index: number) => {
@@ -31,10 +31,10 @@ class Directions2D {
 		this.invertY = invertY;
 		this.rotation = rotation;
 
-		this.UP = getDir((this.invertY ? 0 : 2) + this.rotation);
-		this.DOWN = getDir((this.invertY ? 2 : 0) + this.rotation);
-		this.RIGHT = getDir((this.invertX ? 1 : 3) + this.rotation);
-		this.LEFT = getDir((this.invertX ? 3 : 1) + this.rotation);
+		this.UP = getDir((!this.invertY ? 0 : 2) + this.rotation);
+		this.DOWN = getDir((!this.invertY ? 2 : 0) + this.rotation);
+		this.RIGHT = getDir((!this.invertX ? 1 : 3) + this.rotation);
+		this.LEFT = getDir((!this.invertX ? 3 : 1) + this.rotation);
 	}
 
 	rotate(amt: number) {
