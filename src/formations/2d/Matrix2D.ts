@@ -20,7 +20,7 @@ export default class Matrix2D<
 	mat: T[][];
 	createTile;
 	probabilities: P[];
-	protected topLeft: Point2D;
+	topLeft: Point2D;
 
 	constructor({
 		width,
