@@ -20,6 +20,7 @@ export default class Matrix2D<
 	mat: T[][];
 	createTile;
 	probabilities: P[];
+	protected topLeft: Point2D;
 
 	constructor({
 		width,
@@ -33,6 +34,7 @@ export default class Matrix2D<
 		this.height = height;
 		this.probabilities = probabilities;
 		this.createTile = createTile;
+		this.topLeft = new Point2D(0, 0);
 
 		this.mat = Array.from({ length: height }, (_, j) =>
 			Array.from({ length: width }, (_, i) => {
@@ -46,7 +48,9 @@ export default class Matrix2D<
 	}
 
 	get(position: Point2D) {
-		return this.mat?.[position.y]?.[position.x];
+		return this.mat?.[position.y - this.topLeft.y]?.[
+			position.x - this.topLeft.y
+		];
 	}
 
 	below(position: Point2D | T) {
@@ -121,7 +125,21 @@ export default class Matrix2D<
 		return this.mat[pos.y];
 	}
 
-	expand({ top = 0, left = 0, bottom = 0, right = 0 }) {
+	expand(
+		exp:
+			| number
+			| { top: number; left: number; bottom: number; right: number }
+	) {
+		const {
+			top = 0,
+			left = 0,
+			bottom = 0,
+			right = 0,
+		} = typeof exp === 'number'
+			? { top: exp, left: exp, bottom: exp, right: exp }
+			: exp;
+
+		this.topLeft = this.topLeft.add(-left, -top);
 		this.mat = Array.from({ length: this.height + top + bottom }, (_, j) =>
 			Array.from({ length: this.width + left + right }, (_, i) => {
 				const m = this.mat?.[j - top]?.[i - left];
@@ -130,13 +148,19 @@ export default class Matrix2D<
 					return m;
 				}
 
-				const f = this.createTile(new Point2D(i, j), this);
+				const f = this.createTile(
+					new Point2D(i + this.topLeft.x, j + this.topLeft.y),
+					this
+				);
 
 				this.items.push(f);
 
 				return f;
 			})
 		);
+
+		this.width += left + right;
+		this.height += top + bottom;
 	}
 
 	tileMissingOrCheck(position: Point2D, callback: (tile: T) => boolean) {
