@@ -48,7 +48,7 @@ export default class Formation<
 		return false;
 	}
 
-	collapseAll({ step = 1, timeout = 0 } = {}) {
+	collapseAll({ step = 1, timeout = 0, onComplete = () => {} } = {}) {
 		const t = setInterval(() => {
 			let ret = true;
 
@@ -58,6 +58,7 @@ export default class Formation<
 
 			if (!ret) {
 				clearInterval(t);
+				onComplete();
 			}
 		}, timeout);
 
