@@ -22,16 +22,23 @@ export default class FormationItem<P extends FormationProbability> {
 	collapse(ctx: FormationContext<P>) {
 		if (!this.collapsed) {
 			if (this.probabilities.length) {
-				this.collapsed = getRandomWithWeight(
-					this.probabilities,
-					this.probabilities.map((p) => p.getWeight())
+				this.collapseTo(
+					ctx,
+					getRandomWithWeight(
+						this.probabilities,
+						this.probabilities.map((p) => p.getWeight())
+					)
 				);
-
-				ctx.invalidations.forEach((inv: any) => {
-					inv.calcProbabilities({ ...ctx, item: inv });
-				});
 			}
 		}
+	}
+
+	collapseTo(ctx: FormationContext<P>, probability: P) {
+		this.collapsed = probability;
+
+		ctx.invalidations.forEach((inv: any) => {
+			inv.calcProbabilities({ ...ctx, item: inv });
+		});
 	}
 
 	isCollapsed() {
